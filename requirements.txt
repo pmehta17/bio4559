@@ -1,0 +1,15 @@
+epydemix
+fastexcel
+igraph
+jupyter
+matplotlib
+networkx
+numpy
+openpyxl
+pandas
+polars
+seaborn
+SpringRank
+webweb
+xgi
+xlsx2csv  
