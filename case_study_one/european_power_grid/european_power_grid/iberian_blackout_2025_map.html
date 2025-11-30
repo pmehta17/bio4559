@@ -1,0 +1,543 @@
+<!DOCTYPE html>
+<html>
+<head>
+    
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+    <script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.3/dist/leaflet.js"></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Leaflet.awesome-markers/2.0.2/leaflet.awesome-markers.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.3/dist/leaflet.css"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="https://netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap-glyphicons.css"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.2.0/css/all.min.css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Leaflet.awesome-markers/2.0.2/leaflet.awesome-markers.css"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/python-visualization/folium/folium/templates/leaflet.awesome.rotate.min.css"/>
+    
+            <meta name="viewport" content="width=device-width,
+                initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+            <style>
+                #map_a4ca6795f8638b32980bbcdadd01dc49 {
+                    position: relative;
+                    width: 100.0%;
+                    height: 100.0%;
+                    left: 0.0%;
+                    top: 0.0%;
+                }
+                .leaflet-container { font-size: 1rem; }
+            </style>
+
+            <style>html, body {
+                width: 100%;
+                height: 100%;
+                margin: 0;
+                padding: 0;
+            }
+            </style>
+
+            <style>#map {
+                position:absolute;
+                top:0;
+                bottom:0;
+                right:0;
+                left:0;
+                }
+            </style>
+
+            <script>
+                L_NO_TOUCH = false;
+                L_DISABLE_3D = false;
+            </script>
+
+        
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.1.0/leaflet.markercluster.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.1.0/MarkerCluster.css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.1.0/MarkerCluster.Default.css"/>
+</head>
+<body>
+    
+    
+<div style="position: fixed; 
+     bottom: 50px; left: 50px; width: 220px; height: 240px; 
+     border:2px solid grey; z-index:9999; font-size:14px;
+     background-color:white; opacity: 0.9; padding: 10px;">
+<b>Legend — Event Status</b><br>
+&nbsp;<i>instability</i> &nbsp; <span style="color:orange">●</span> Oscillations detected<br>
+&nbsp;<i>generation_trip</i> &nbsp; <span style="color:red">●</span> Generation trips (loss)<br>
+&nbsp;<i>load_shedding</i> &nbsp; <span style="color:darkred">●</span> Frequency drop / load shed<br>
+&nbsp;<i>line_trip</i> &nbsp; <span style="color:purple">●</span> AC transmission trip<br>
+&nbsp;<i>collapse</i> &nbsp; <span style="color:black">●</span> Grid collapse / HVDC trip<br>
+&nbsp;<i>reenergize</i> &nbsp; <span style="color:blue">●</span> Re-energisation of lines/interconnects<br>
+&nbsp;<i>black_start</i> &nbsp; <span style="color:cadetblue">●</span> Black-start procedures<br>
+&nbsp;<i>restored</i> &nbsp; <span style="color:green">●</span> Grid fully restored<br>
+</div>
+    
+            <div class="folium-map" id="map_a4ca6795f8638b32980bbcdadd01dc49" ></div>
+        
+</body>
+<script>
+    
+    
+            var map_a4ca6795f8638b32980bbcdadd01dc49 = L.map(
+                "map_a4ca6795f8638b32980bbcdadd01dc49",
+                {
+                    center: [40.0, -4.0],
+                    crs: L.CRS.EPSG3857,
+                    ...{
+  "zoom": 6,
+  "zoomControl": true,
+  "preferCanvas": false,
+}
+
+                }
+            );
+            L.control.scale().addTo(map_a4ca6795f8638b32980bbcdadd01dc49);
+
+            
+
+        
+    
+            var tile_layer_93da994489aa970212fc7e5ed64c1983 = L.tileLayer(
+                "https://tile.openstreetmap.org/{z}/{x}/{y}.png",
+                {
+  "minZoom": 0,
+  "maxZoom": 19,
+  "maxNativeZoom": 19,
+  "noWrap": false,
+  "attribution": "\u0026copy; \u003ca href=\"https://www.openstreetmap.org/copyright\"\u003eOpenStreetMap\u003c/a\u003e contributors",
+  "subdomains": "abc",
+  "detectRetina": false,
+  "tms": false,
+  "opacity": 1,
+}
+
+            );
+        
+    
+            tile_layer_93da994489aa970212fc7e5ed64c1983.addTo(map_a4ca6795f8638b32980bbcdadd01dc49);
+        
+    
+            var marker_cluster_7906363b28a6178651dfea25b126238d = L.markerClusterGroup(
+                {
+}
+            );
+        
+    
+            var circle_marker_2f472d970de3f319c0ee9ba194df99dc = L.circleMarker(
+                [40.0, -4.0],
+                {"bubblingMouseEvents": true, "color": "orange", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "orange", "fillOpacity": 0.9, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 7, "stroke": true, "weight": 3}
+            ).addTo(marker_cluster_7906363b28a6178651dfea25b126238d);
+        
+    
+        var popup_324ad1e83952702beafd86a54c0939d0 = L.popup({
+  "maxWidth": 300,
+});
+
+        
+            
+                var html_a17be8cd6bc7e1db5b551d3f11849458 = $(`<div id="html_a17be8cd6bc7e1db5b551d3f11849458" style="width: 100.0%; height: 100.0%;"><b>12:03 – 12:07 CEST</b><br><b>Iberian grid (widespread)</b><br>First oscillations detected and mitigated.</div>`)[0];
+                popup_324ad1e83952702beafd86a54c0939d0.setContent(html_a17be8cd6bc7e1db5b551d3f11849458);
+            
+        
+
+        circle_marker_2f472d970de3f319c0ee9ba194df99dc.bindPopup(popup_324ad1e83952702beafd86a54c0939d0)
+        ;
+
+        
+    
+    
+            var circle_marker_e4993fd56984d49e4be11cf070cd299a = L.circleMarker(
+                [39.5, -3.5],
+                {"bubblingMouseEvents": true, "color": "orange", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "orange", "fillOpacity": 0.9, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 7, "stroke": true, "weight": 3}
+            ).addTo(marker_cluster_7906363b28a6178651dfea25b126238d);
+        
+    
+        var popup_93416afc6e9e91db6b067a08da8a070b = L.popup({
+  "maxWidth": 300,
+});
+
+        
+            
+                var html_313e59b019f53ee40fc71a12a5abd7f0 = $(`<div id="html_313e59b019f53ee40fc71a12a5abd7f0" style="width: 100.0%; height: 100.0%;"><b>12:19 – 12:21 CEST</b><br><b>Spain & Portugal</b><br>Second oscillations detected and mitigated.</div>`)[0];
+                popup_93416afc6e9e91db6b067a08da8a070b.setContent(html_313e59b019f53ee40fc71a12a5abd7f0);
+            
+        
+
+        circle_marker_e4993fd56984d49e4be11cf070cd299a.bindPopup(popup_93416afc6e9e91db6b067a08da8a070b)
+        ;
+
+        
+    
+    
+            var circle_marker_5774fb6beb451011bc635add4a6a8216 = L.circleMarker(
+                [37.1773, -3.5986],
+                {"bubblingMouseEvents": true, "color": "red", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "red", "fillOpacity": 0.9, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 7, "stroke": true, "weight": 3}
+            ).addTo(marker_cluster_7906363b28a6178651dfea25b126238d);
+        
+    
+        var popup_e42e5af4bccd396c772024789e3bb0fb = L.popup({
+  "maxWidth": 300,
+});
+
+        
+            
+                var html_619c7c4087809b026a468947993b4542 = $(`<div id="html_619c7c4087809b026a468947993b4542" style="width: 100.0%; height: 100.0%;"><b>12:32:57 – 12:33:17 CEST</b><br><b>Granada</b><br>Generation trips (loss of ~2200 MW).</div>`)[0];
+                popup_e42e5af4bccd396c772024789e3bb0fb.setContent(html_619c7c4087809b026a468947993b4542);
+            
+        
+
+        circle_marker_5774fb6beb451011bc635add4a6a8216.bindPopup(popup_e42e5af4bccd396c772024789e3bb0fb)
+        ;
+
+        
+    
+    
+            var circle_marker_fd816f6c73d1f65d2249bb405960da52 = L.circleMarker(
+                [38.8794, -6.9707],
+                {"bubblingMouseEvents": true, "color": "red", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "red", "fillOpacity": 0.9, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 7, "stroke": true, "weight": 3}
+            ).addTo(marker_cluster_7906363b28a6178651dfea25b126238d);
+        
+    
+        var popup_eda5a9ce26fec6dda0204135182d36f1 = L.popup({
+  "maxWidth": 300,
+});
+
+        
+            
+                var html_600b1061efd9223c8b7b16770ab4e33d = $(`<div id="html_600b1061efd9223c8b7b16770ab4e33d" style="width: 100.0%; height: 100.0%;"><b>12:32:57 – 12:33:17 CEST</b><br><b>Badajoz</b><br>Generation trips (loss of ~2200 MW).</div>`)[0];
+                popup_eda5a9ce26fec6dda0204135182d36f1.setContent(html_600b1061efd9223c8b7b16770ab4e33d);
+            
+        
+
+        circle_marker_fd816f6c73d1f65d2249bb405960da52.bindPopup(popup_eda5a9ce26fec6dda0204135182d36f1)
+        ;
+
+        
+    
+    
+            var circle_marker_606baa2bf901e079651021eb4769fad9 = L.circleMarker(
+                [37.3891, -5.9845],
+                {"bubblingMouseEvents": true, "color": "red", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "red", "fillOpacity": 0.9, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 7, "stroke": true, "weight": 3}
+            ).addTo(marker_cluster_7906363b28a6178651dfea25b126238d);
+        
+    
+        var popup_8a4d72497dd7b22c423d6c57b3d8ee1e = L.popup({
+  "maxWidth": 300,
+});
+
+        
+            
+                var html_d2f73895df7c56995de77678c6b5df1c = $(`<div id="html_d2f73895df7c56995de77678c6b5df1c" style="width: 100.0%; height: 100.0%;"><b>12:32:57 – 12:33:17 CEST</b><br><b>Seville</b><br>Generation trips (loss of ~2200 MW).</div>`)[0];
+                popup_8a4d72497dd7b22c423d6c57b3d8ee1e.setContent(html_d2f73895df7c56995de77678c6b5df1c);
+            
+        
+
+        circle_marker_606baa2bf901e079651021eb4769fad9.bindPopup(popup_8a4d72497dd7b22c423d6c57b3d8ee1e)
+        ;
+
+        
+    
+    
+            var circle_marker_32dabd278d86535e5e46444a82984dce = L.circleMarker(
+                [40.0, -4.0],
+                {"bubblingMouseEvents": true, "color": "darkred", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "darkred", "fillOpacity": 0.9, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 7, "stroke": true, "weight": 3}
+            ).addTo(marker_cluster_7906363b28a6178651dfea25b126238d);
+        
+    
+        var popup_ba85cdaca0592524be1a5f88c7fdd95e = L.popup({
+  "maxWidth": 300,
+});
+
+        
+            
+                var html_2d56a0af2710be25b023e894b1e2241a = $(`<div id="html_2d56a0af2710be25b023e894b1e2241a" style="width: 100.0%; height: 100.0%;"><b>12:33:18 – 12:33:21 CEST</b><br><b>Iberian Peninsula</b><br>Grid frequency drops below 48.0 Hz — automatic load shedding activated.</div>`)[0];
+                popup_ba85cdaca0592524be1a5f88c7fdd95e.setContent(html_2d56a0af2710be25b023e894b1e2241a);
+            
+        
+
+        circle_marker_32dabd278d86535e5e46444a82984dce.bindPopup(popup_ba85cdaca0592524be1a5f88c7fdd95e)
+        ;
+
+        
+    
+    
+            var circle_marker_952981596af948efa4df87a77da8561b = L.circleMarker(
+                [42.8, 0.0],
+                {"bubblingMouseEvents": true, "color": "purple", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "purple", "fillOpacity": 0.9, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 7, "stroke": true, "weight": 3}
+            ).addTo(marker_cluster_7906363b28a6178651dfea25b126238d);
+        
+    
+        var popup_ea6f9c1066486ed6d8b0e14df6d037d7 = L.popup({
+  "maxWidth": 300,
+});
+
+        
+            
+                var html_63302645f2910b3911ee4189370187a1 = $(`<div id="html_63302645f2910b3911ee4189370187a1" style="width: 100.0%; height: 100.0%;"><b>12:33:21 CEST</b><br><b>Pyrenees / France–Spain border</b><br>AC transmission lines between France and Spain trip.</div>`)[0];
+                popup_ea6f9c1066486ed6d8b0e14df6d037d7.setContent(html_63302645f2910b3911ee4189370187a1);
+            
+        
+
+        circle_marker_952981596af948efa4df87a77da8561b.bindPopup(popup_ea6f9c1066486ed6d8b0e14df6d037d7)
+        ;
+
+        
+    
+    
+            var circle_marker_736de059e239050e720c641ab2151e5d = L.circleMarker(
+                [42.4, 2.8],
+                {"bubblingMouseEvents": true, "color": "black", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "black", "fillOpacity": 0.9, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 7, "stroke": true, "weight": 3}
+            ).addTo(marker_cluster_7906363b28a6178651dfea25b126238d);
+        
+    
+        var popup_bba1f2f2973ddcb1b94f6a54935cedc5 = L.popup({
+  "maxWidth": 300,
+});
+
+        
+            
+                var html_838521af5e8e1889bb4e33b210541d3e = $(`<div id="html_838521af5e8e1889bb4e33b210541d3e" style="width: 100.0%; height: 100.0%;"><b>12:33:24 CEST</b><br><b>Iberian Peninsula (HVDC Baixas–Santa Llogaia)</b><br>Complete grid collapse; HVDC link between France and Spain trips.</div>`)[0];
+                popup_bba1f2f2973ddcb1b94f6a54935cedc5.setContent(html_838521af5e8e1889bb4e33b210541d3e);
+            
+        
+
+        circle_marker_736de059e239050e720c641ab2151e5d.bindPopup(popup_bba1f2f2973ddcb1b94f6a54935cedc5)
+        ;
+
+        
+    
+    
+            var circle_marker_952a60017f16f7c738ea231a66da270a = L.circleMarker(
+                [43.3, -2.9],
+                {"bubblingMouseEvents": true, "color": "blue", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "blue", "fillOpacity": 0.9, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 7, "stroke": true, "weight": 3}
+            ).addTo(marker_cluster_7906363b28a6178651dfea25b126238d);
+        
+    
+        var popup_8758a0180aa9fe99456eb3b735d09e8a = L.popup({
+  "maxWidth": 300,
+});
+
+        
+            
+                var html_5ce42f490674dd5833fe6c39cd21f012 = $(`<div id="html_5ce42f490674dd5833fe6c39cd21f012" style="width: 100.0%; height: 100.0%;"><b>12:44 CEST</b><br><b>Northern Spain (Basque region)</b><br>First 400 kV Spain–France AC line re-energized.</div>`)[0];
+                popup_8758a0180aa9fe99456eb3b735d09e8a.setContent(html_5ce42f490674dd5833fe6c39cd21f012);
+            
+        
+
+        circle_marker_952a60017f16f7c738ea231a66da270a.bindPopup(popup_8758a0180aa9fe99456eb3b735d09e8a)
+        ;
+
+        
+    
+    
+            var circle_marker_10580e82815c9aa9bbaedcb792653d71 = L.circleMarker(
+                [36.014, -5.605],
+                {"bubblingMouseEvents": true, "color": "blue", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "blue", "fillOpacity": 0.9, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 7, "stroke": true, "weight": 3}
+            ).addTo(marker_cluster_7906363b28a6178651dfea25b126238d);
+        
+    
+        var popup_d9294cffad9841c4c3290e8e4c7bbaf3 = L.popup({
+  "maxWidth": 300,
+});
+
+        
+            
+                var html_1aad58a79298293c1c49ca346ba2b8fe = $(`<div id="html_1aad58a79298293c1c49ca346ba2b8fe" style="width: 100.0%; height: 100.0%;"><b>13:04 CEST</b><br><b>Tarifa (Cádiz)</b><br>Spain–Morocco interconnect re-energized.</div>`)[0];
+                popup_d9294cffad9841c4c3290e8e4c7bbaf3.setContent(html_1aad58a79298293c1c49ca346ba2b8fe);
+            
+        
+
+        circle_marker_10580e82815c9aa9bbaedcb792653d71.bindPopup(popup_d9294cffad9841c4c3290e8e4c7bbaf3)
+        ;
+
+        
+    
+    
+            var circle_marker_be59d40fc5c1be4841dbb4daed07f378 = L.circleMarker(
+                [42.5, -1.5],
+                {"bubblingMouseEvents": true, "color": "cadetblue", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "cadetblue", "fillOpacity": 0.9, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 7, "stroke": true, "weight": 3}
+            ).addTo(marker_cluster_7906363b28a6178651dfea25b126238d);
+        
+    
+        var popup_d58e7378d2de55be2f76d240ea308e4a = L.popup({
+  "maxWidth": 300,
+});
+
+        
+            
+                var html_b140da6e8bd68e397d56c306cce5e04a = $(`<div id="html_b140da6e8bd68e397d56c306cce5e04a" style="width: 100.0%; height: 100.0%;"><b>~13:30 CEST</b><br><b>Representative - Northern Spain (approx.)</b><br>Spanish hydro power plants with black start capability begin procedures.</div>`)[0];
+                popup_d58e7378d2de55be2f76d240ea308e4a.setContent(html_b140da6e8bd68e397d56c306cce5e04a);
+            
+        
+
+        circle_marker_be59d40fc5c1be4841dbb4daed07f378.bindPopup(popup_d58e7378d2de55be2f76d240ea308e4a)
+        ;
+
+        
+    
+    
+            var circle_marker_5137f4740b98eb63c5b9ba114e5d3d84 = L.circleMarker(
+                [41.3851, 2.1734],
+                {"bubblingMouseEvents": true, "color": "blue", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "blue", "fillOpacity": 0.9, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 7, "stroke": true, "weight": 3}
+            ).addTo(marker_cluster_7906363b28a6178651dfea25b126238d);
+        
+    
+        var popup_59d09d47848a36267368c856dac38fb8 = L.popup({
+  "maxWidth": 300,
+});
+
+        
+            
+                var html_d98d1ffb266e9dea0363b4e6a5c0e77a = $(`<div id="html_d98d1ffb266e9dea0363b4e6a5c0e77a" style="width: 100.0%; height: 100.0%;"><b>13:35 CEST</b><br><b>Catalonia (near Barcelona)</b><br>Eastern Spain–France AC line re-energized.</div>`)[0];
+                popup_59d09d47848a36267368c856dac38fb8.setContent(html_d98d1ffb266e9dea0363b4e6a5c0e77a);
+            
+        
+
+        circle_marker_5137f4740b98eb63c5b9ba114e5d3d84.bindPopup(popup_59d09d47848a36267368c856dac38fb8)
+        ;
+
+        
+    
+    
+            var circle_marker_e8978e777323e88952d761778304e863 = L.circleMarker(
+                [41.1579, -8.6291],
+                {"bubblingMouseEvents": true, "color": "cadetblue", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "cadetblue", "fillOpacity": 0.9, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 7, "stroke": true, "weight": 3}
+            ).addTo(marker_cluster_7906363b28a6178651dfea25b126238d);
+        
+    
+        var popup_6df09347e8cad68cfacff042a682c008 = L.popup({
+  "maxWidth": 300,
+});
+
+        
+            
+                var html_ce4637e8aebd53f106dfef02f860fa80 = $(`<div id="html_ce4637e8aebd53f106dfef02f860fa80" style="width: 100.0%; height: 100.0%;"><b>16:11 CEST</b><br><b>Northern Portugal (Porto region)</b><br>First black-start capable power plant in Portugal starts.</div>`)[0];
+                popup_6df09347e8cad68cfacff042a682c008.setContent(html_ce4637e8aebd53f106dfef02f860fa80);
+            
+        
+
+        circle_marker_e8978e777323e88952d761778304e863.bindPopup(popup_6df09347e8cad68cfacff042a682c008)
+        ;
+
+        
+    
+    
+            var circle_marker_d2a067fd004f3545ba2692578f9245e7 = L.circleMarker(
+                [40.2033, -8.4103],
+                {"bubblingMouseEvents": true, "color": "cadetblue", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "cadetblue", "fillOpacity": 0.9, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 7, "stroke": true, "weight": 3}
+            ).addTo(marker_cluster_7906363b28a6178651dfea25b126238d);
+        
+    
+        var popup_68d27efeb140ad3839d2cbfd6554d547 = L.popup({
+  "maxWidth": 300,
+});
+
+        
+            
+                var html_3261d952d5f06b0720857e75c65b8c2d = $(`<div id="html_3261d952d5f06b0720857e75c65b8c2d" style="width: 100.0%; height: 100.0%;"><b>17:26 CEST</b><br><b>Central Portugal (Coimbra region)</b><br>Second black-start capable power plant in Portugal starts.</div>`)[0];
+                popup_68d27efeb140ad3839d2cbfd6554d547.setContent(html_3261d952d5f06b0720857e75c65b8c2d);
+            
+        
+
+        circle_marker_d2a067fd004f3545ba2692578f9245e7.bindPopup(popup_68d27efeb140ad3839d2cbfd6554d547)
+        ;
+
+        
+    
+    
+            var circle_marker_0327709ef10c0e81e2cc5ce2b9cd6c48 = L.circleMarker(
+                [41.3, -6.2],
+                {"bubblingMouseEvents": true, "color": "blue", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "blue", "fillOpacity": 0.9, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 7, "stroke": true, "weight": 3}
+            ).addTo(marker_cluster_7906363b28a6178651dfea25b126238d);
+        
+    
+        var popup_2aac8a36f66f735b702342d9dc2e5f6c = L.popup({
+  "maxWidth": 300,
+});
+
+        
+            
+                var html_0527641eb7c2f03cf908f3a9c690b5c8 = $(`<div id="html_0527641eb7c2f03cf908f3a9c690b5c8" style="width: 100.0%; height: 100.0%;"><b>18:36 CEST</b><br><b>Salamanca–Bragança border region</b><br>220 kV line between Spain and Portugal re-energized.</div>`)[0];
+                popup_2aac8a36f66f735b702342d9dc2e5f6c.setContent(html_0527641eb7c2f03cf908f3a9c690b5c8);
+            
+        
+
+        circle_marker_0327709ef10c0e81e2cc5ce2b9cd6c48.bindPopup(popup_2aac8a36f66f735b702342d9dc2e5f6c)
+        ;
+
+        
+    
+    
+            var circle_marker_26cc627ce14fce4afc39e69099f1035d = L.circleMarker(
+                [38.9167, -6.3333],
+                {"bubblingMouseEvents": true, "color": "blue", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "blue", "fillOpacity": 0.9, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 7, "stroke": true, "weight": 3}
+            ).addTo(marker_cluster_7906363b28a6178651dfea25b126238d);
+        
+    
+        var popup_86690bb7e9adc8d325b7f8849d6303d5 = L.popup({
+  "maxWidth": 300,
+});
+
+        
+            
+                var html_f897c4a285e0f05895e81bb0349ad1a5 = $(`<div id="html_f897c4a285e0f05895e81bb0349ad1a5" style="width: 100.0%; height: 100.0%;"><b>21:35 CEST</b><br><b>Alentejo–Extremadura corridor (Mérida area)</b><br>400 kV line between Spain and southern Portugal re-energized.</div>`)[0];
+                popup_86690bb7e9adc8d325b7f8849d6303d5.setContent(html_f897c4a285e0f05895e81bb0349ad1a5);
+            
+        
+
+        circle_marker_26cc627ce14fce4afc39e69099f1035d.bindPopup(popup_86690bb7e9adc8d325b7f8849d6303d5)
+        ;
+
+        
+    
+    
+            var circle_marker_193d85c50e39d186923c4a4acda7688a = L.circleMarker(
+                [38.7223, -9.1393],
+                {"bubblingMouseEvents": true, "color": "green", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "green", "fillOpacity": 0.9, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 7, "stroke": true, "weight": 3}
+            ).addTo(marker_cluster_7906363b28a6178651dfea25b126238d);
+        
+    
+        var popup_d81efeca686f43d58f9e0b884fc9a469 = L.popup({
+  "maxWidth": 300,
+});
+
+        
+            
+                var html_9729b29007d63fe8a78cf1c667ee1097 = $(`<div id="html_9729b29007d63fe8a78cf1c667ee1097" style="width: 100.0%; height: 100.0%;"><b>00:22 CEST (next day)</b><br><b>Portugal (representative - Lisbon)</b><br>Grid fully restored in Portugal.</div>`)[0];
+                popup_d81efeca686f43d58f9e0b884fc9a469.setContent(html_9729b29007d63fe8a78cf1c667ee1097);
+            
+        
+
+        circle_marker_193d85c50e39d186923c4a4acda7688a.bindPopup(popup_d81efeca686f43d58f9e0b884fc9a469)
+        ;
+
+        
+    
+    
+            var circle_marker_aed0e12aa585d8f72cc7c3aef9631c59 = L.circleMarker(
+                [40.4168, -3.7038],
+                {"bubblingMouseEvents": true, "color": "green", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "green", "fillOpacity": 0.9, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 7, "stroke": true, "weight": 3}
+            ).addTo(marker_cluster_7906363b28a6178651dfea25b126238d);
+        
+    
+        var popup_a88fc7d104e0326b8f60bb5a2302b893 = L.popup({
+  "maxWidth": 300,
+});
+
+        
+            
+                var html_6d7e6c3171f21aaea8e6f69536bf2ff4 = $(`<div id="html_6d7e6c3171f21aaea8e6f69536bf2ff4" style="width: 100.0%; height: 100.0%;"><b>04:00 CEST (next day)</b><br><b>Spain (representative - Madrid)</b><br>Grid fully restored in Spain.</div>`)[0];
+                popup_a88fc7d104e0326b8f60bb5a2302b893.setContent(html_6d7e6c3171f21aaea8e6f69536bf2ff4);
+            
+        
+
+        circle_marker_aed0e12aa585d8f72cc7c3aef9631c59.bindPopup(popup_a88fc7d104e0326b8f60bb5a2302b893)
+        ;
+
+        
+    
+    
+            marker_cluster_7906363b28a6178651dfea25b126238d.addTo(map_a4ca6795f8638b32980bbcdadd01dc49);
+        
+</script>
+</html>
